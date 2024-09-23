@@ -1,8 +1,8 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:logger/logger.dart';
 
 import 'actions.dart';
 import 'event.dart';
@@ -22,9 +22,6 @@ class FlutterCallkeep extends EventManager {
   static const MethodChannel _channel = MethodChannel('FlutterCallKeep.Method');
   static const MethodChannel _event = MethodChannel('FlutterCallKeep.Event');
   Future<bool> Function()? _showAlertDialog;
-
-  @override
-  Logger logger = Logger();
 
   Future<void> setup({
     Future<bool> Function()? showAlertDialog,
@@ -310,8 +307,10 @@ class FlutterCallkeep extends EventManager {
     required String uuid,
     required String callerName,
   }) async {
-    logger.d(
-        'CallKeep.reportUpdatedCall is deprecated, use CallKeep.updateDisplay instead');
+    log(
+      'CallKeep.reportUpdatedCall is deprecated, use CallKeep.updateDisplay instead',
+      name: 'FlutterCallkeep',
+    );
 
     return isIOS
         ? await _channel
@@ -404,7 +403,10 @@ class FlutterCallkeep extends EventManager {
 
   Future<bool> _alert() async {
     if (_showAlertDialog == null) {
-      logger.w('No alert dialog function provided. Defaulting to false.');
+      log(
+        'No alert dialog function provided. Defaulting to false.',
+        name: 'FlutterCallkeep',
+      );
       return false;
     }
     return await _showAlertDialog!();
@@ -422,8 +424,10 @@ class FlutterCallkeep extends EventManager {
   }
 
   Future<void> eventListener(MethodCall call) async {
-    logger.d(
-        '[CallKeep] INFO: received event "${call.method}" ${call.arguments}');
+    log(
+      '[CallKeep] INFO: received event "${call.method}" ${call.arguments}',
+      name: 'FlutterCallkeep',
+    );
     final data = call.arguments as Map<dynamic, dynamic>;
     switch (call.method) {
       case 'CallKeepDidReceiveStartCallAction':

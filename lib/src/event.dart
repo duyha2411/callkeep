@@ -1,5 +1,6 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
-import 'package:logger/web.dart';
 
 abstract class EventType {
   const EventType();
@@ -24,7 +25,6 @@ abstract class EventType {
 ///  -- do something here
 /// });
 class EventManager {
-  Logger logger = Logger();
   Map<Type, List<Function>> listeners = <Type, List<Function>>{};
 
   /// returns true if there are any listeners associated with the EventType for this instance of EventManager
@@ -81,7 +81,10 @@ class EventManager {
     final targets = listeners[T];
     if (targets == null) return;
     if (!targets.remove(listener)) {
-      logger.d('Failed to remove any listeners for EventType $T');
+      log(
+        'Failed to remove any listeners for EventType $T',
+        name: 'FlutterCallkeep',
+      );
     }
   }
 
